@@ -67,8 +67,10 @@
   <ItemGroup>
     <Compile Include="Components\FollowFinger.cs" />
     <Compile Include="Components\LeftRightComponent.cs" />
+    <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\Selectable.cs" />
     <Compile Include="Components\UpDownComponent.cs" />
+    <Compile Include="EngineComponents\Physics.cs" />
     <Compile Include="EngineComponents\Touch.cs" />
     <Compile Include="Events\TouchEvents.cs" />
     <Compile Include="Main.cs" />
@@ -92,6 +94,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\extern\Farseer Physics Engine 3.3.1 Samples XNA\DebugView XNA\DebugView XNA WP7.csproj">
+      <Project>{F658A60D-5941-4CBE-8EC1-8AE20E93F60E}</Project>
+      <Name>DebugView XNA WP7</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\extern\Farseer Physics Engine 3.3.1 Samples XNA\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA WP7.csproj">
+      <Project>{AA6CB78E-9484-4843-8613-54CD2BF1E948}</Project>
+      <Name>Farseer Physics XNA WP7</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\framework\Barebones\Barebones\Barebones_Phone.csproj">
       <Project>{6319B046-3789-4C96-B10B-E86EE3159514}</Project>
       <Name>Barebones_Phone</Name>

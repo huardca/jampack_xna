@@ -19,11 +19,13 @@ namespace _2dgame.EngineComponents
         GraphicsDevice m_Device;
         List<Selectable> m_Selectable = new List<Selectable>();
         Camera m_Camera;
+        RawRenderer m_Renderer;
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield return new Dependency<Selectable>(item => m_Selectable.Add(item), item => m_Selectable.Remove(item));
             yield return new Dependency<Camera>(item => m_Camera = item, item => m_Camera = null);
+            yield return new Dependency<RawRenderer>(item => m_Renderer = item, item => m_Renderer = null);
         }
 
         protected override void OnOwnerSet()
@@ -56,6 +58,8 @@ namespace _2dgame.EngineComponents
                     if (sel.Contains(msg.WorldPosition))
                         sel.Owner.Forum.Fire<TouchMsg>(msg);
                 }
+
+                Owner.Forum.Fire<TouchMsg>(msg);
             }
 
             foreach (DragMsg msg in drags)
@@ -65,6 +69,8 @@ namespace _2dgame.EngineComponents
                     if (sel.Contains(msg.Start.WorldPosition))
                         sel.Owner.Forum.Fire<DragMsg>(msg);
                 }
+
+                Owner.Forum.Fire<DragMsg>(msg);
             }
 
         }
@@ -104,14 +110,7 @@ namespace _2dgame.EngineComponents
 
         private Vector3 ScreenToWorld(Vector2 screen)
         {
-            //compensate for 0,0 being upper left instead of lower left
-            screen.Y = m_Device.Viewport.Height - screen.Y;
-
-            Point center = m_Device.Viewport.Bounds.Center;
-            Vector2 fromcenter = screen - new Vector2(center.X, center.Y);
-            Vector3 deltascreen = new Vector3(fromcenter, 0);
-
-            return Vector3.Transform(deltascreen, m_Camera.Owner.GetWorld());
+            return m_Device.Viewport.Unproject(new Vector3(screen, 0.5f), m_Renderer.Projection, m_Camera.GetView(), Matrix.Identity);
         }
     }
 }
