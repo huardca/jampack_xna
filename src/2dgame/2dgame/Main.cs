@@ -12,6 +12,7 @@ using Meat.Resources.Factory;
 using Barebones.Framework;
 using _2dgame.Components;
 using Microsoft.Xna.Framework.Graphics;
+using _2dgame.EngineComponents;
 
 namespace _2dgame
 {
@@ -30,6 +31,7 @@ namespace _2dgame
 
             m_EZBakeOven = new EZBake();
             Owner.AddComponent(m_EZBakeOven);
+            Owner.AddComponent(new Touch());
 
             Owner.Forum.RegisterListener<InitializeMessage>(OnInitialiser);
             Owner.Forum.RegisterListener<CreatedMessage>(OnCreated);
@@ -61,9 +63,11 @@ namespace _2dgame
 
             //create body
             Entity body = Owner.CreateEntity();
-            body.Transform = Matrix.CreateTranslation(-300 * Vector3.UnitX);
+            body.Transform = Matrix.CreateTranslation(5 * Vector3.UnitY);
+            Vector2 bodySize = new Vector2(300, 198);
+            body.AddComponent(new Selectable(new BoundingBox(new Vector3(-0.5f * bodySize, -2), new Vector3(0.5f * bodySize, 2))));
             body.AddComponent(new FollowFinger());
-            m_EZBakeOven.MakeSprite(body, new Vector2(300, 198), "body");
+            m_EZBakeOven.MakeSprite(body, bodySize, "body");
 
             //create neck
             Entity neck = body.CreateChild();
@@ -85,7 +89,7 @@ namespace _2dgame
 
             //create cake
             Entity cake = Owner.CreateEntity();
-            cake.Transform = Matrix.CreateTranslation(300 * Vector3.UnitX);
+            cake.Transform = Matrix.CreateTranslation(-50 * Vector3.UnitY);
             m_EZBakeOven.MakeSprite(cake, new Vector2(200, 200), "cake");
 
             //create flame
