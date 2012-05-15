@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -23,7 +22,7 @@ using System.Resources;
 // On Windows, the following GUID is for the ID of the typelib if this
 // project is exposed to COM. On other platforms, it unique identifies the
 // title storage container when deploying this assembly to the device.
-[assembly: Guid("f2663a7b-f813-4712-86d3-4d7012a71879")]
+[assembly: Guid("20f43f9b-ea6b-4592-ba68-abd3f8a74c89")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,4 +32,3 @@ using System.Resources;
 //      Revision
 //
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguageAttribute("en-US")]

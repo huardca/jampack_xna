@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2dgame.EngineComponents
 {
-    class Touch : EngineComponent, Barebones.Framework.IUpdateable
+    class TouchReader : EngineComponent, Barebones.Framework.IUpdateable
     {
         GraphicsDevice m_Device;
         List<Selectable> m_Selectable = new List<Selectable>();

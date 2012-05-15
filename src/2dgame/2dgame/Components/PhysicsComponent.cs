@@ -6,12 +6,31 @@ using Barebones.Components;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Common;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace _2dgame.Components
 {
     class PhysicsComponent : EntityComponent, Barebones.Framework.IUpdateable
     {
         Body m_Body;
+
+        public BodyType BodyType
+        {
+            get { return m_Body.BodyType; }
+            set { m_Body.BodyType = value; }
+        }
+
+        public Vector2 LinearVelocity
+        {
+            get { return m_Body.LinearVelocity; }
+            set { m_Body.LinearVelocity = value; }
+        }
+
+        public float AngularVelocity
+        {
+            get { return m_Body.AngularVelocity; }
+            set { m_Body.AngularVelocity = value; }
+        }
 
         public PhysicsComponent(Body body)
         {
@@ -25,7 +44,7 @@ namespace _2dgame.Components
 
         protected override void OnOwnerSet()
         {
-            SyncBodyToEntity();
+            AssignEntityTransformToBody();
 
             base.OnOwnerSet();
         }
@@ -35,17 +54,17 @@ namespace _2dgame.Components
             m_Body.ApplyForce(ref force);
         }
 
-        public void SetVelocity(Vector2 velocity)
+        public void ApplyImpulse(Vector2 impulse)
         {
-            m_Body.LinearVelocity = velocity;
+            m_Body.ApplyLinearImpulse(ref impulse);
         }
 
         public void Update(float dt)
         {
             if (m_Body.BodyType == BodyType.Static)
-                SyncBodyToEntity();
+                AssignEntityTransformToBody();
             else
-                SyncEntityToBody();
+                AssignBodyTransformToEntity();
         }
 
         public void DisposePhysics(World world)
@@ -53,26 +72,26 @@ namespace _2dgame.Components
             world.RemoveBody(m_Body);
         }
 
-        private void SyncBodyToEntity()
+        public Body GetBody()
+        { return m_Body; }
+
+        private void AssignEntityTransformToBody()
         {
             Matrix transform = Owner.GetWorld();
             double angle = Math.Atan2(0, 1) - Math.Atan2(transform.Up.X, transform.Up.Y);
-            m_Body.SetTransform(new Vector2(transform.Translation.X, transform.Translation.Y), (float)angle);//TODO set angle
+            m_Body.SetTransform(new Vector2(transform.Translation.X, transform.Translation.Y), (float)angle);
         }
 
-        private void SyncEntityToBody()
+        private void AssignBodyTransformToEntity()
         {
             Transform phystrans;
             m_Body.GetTransform(out phystrans);
 
-            Matrix world;
-            Matrix.CreateRotationZ(phystrans.R.Angle, out world);
-            world.Translation = new Vector3(phystrans.Position, 0);
+            Matrix desired;
+            Matrix.CreateRotationZ(phystrans.R.Angle, out desired);
+            desired.Translation = new Vector3(phystrans.Position, 0);
 
-            Owner.Transform = Matrix.Identity;
-
-            Matrix currentworld = Owner.GetWorld();
-            Owner.Transform = Matrix.Invert(currentworld) * world;
+            Owner.PlaceInWorld(desired);
         }
     }
 }

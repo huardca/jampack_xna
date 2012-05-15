@@ -12,6 +12,8 @@ using FarseerPhysics;
 using FarseerPhysics.DebugViews;
 using Meat.Rendering;
 using Barebones.Xna;
+using FarseerPhysics.Dynamics.Joints;
+using Barebones.Framework;
 
 namespace _2dgame.EngineComponents
 {
@@ -48,7 +50,17 @@ namespace _2dgame.EngineComponents
             m_View.DefaultShapeColor = Color.Green;
             m_View.SleepingShapeColor = Color.LightGray;
 
-            BodyFactory.CreateEdge(m_World, new Vector2(-10000, min.Y), new Vector2(10000, min.Y));
+            //floor
+            BodyFactory.CreateEdge(m_World, new Vector2(min.X, min.Y), new Vector2(max.X, min.Y));
+
+            //right side
+            BodyFactory.CreateEdge(m_World, new Vector2(max.X, min.Y), new Vector2(max.X, max.Y));
+
+            //left side
+            BodyFactory.CreateEdge(m_World, new Vector2(min.X, min.Y), new Vector2(min.X, max.Y));
+
+            //top
+            BodyFactory.CreateEdge(m_World, new Vector2(min.X, max.Y), new Vector2(max.X, max.Y)); 
         }
 
         public Physics(Vector2 gravity)
@@ -92,6 +104,20 @@ namespace _2dgame.EngineComponents
             Body body = BodyFactory.CreateRoundedRectangle(m_World, width, height, xradius, yradius, segments, density);
             body.BodyType = bodytype;
             return new PhysicsComponent(body);
+        }
+
+        public void ConstrainAngle(float angle, float maximpulse, float softness, Entity entity)
+        {
+            PhysicsComponent physics = entity.GetComponent<PhysicsComponent>();
+            if (physics == null)
+                throw new InvalidOperationException("Joint needs a physics component to constrain");
+
+            FixedAngleJoint joint = JointFactory.CreateFixedAngleJoint(m_World, physics.GetBody());
+            joint.TargetAngle = angle;
+            joint.MaxImpulse = maximpulse;
+            joint.Softness = softness;
+
+            entity.AddComponent(new JointComponent(joint));
         }
 
         public void Update(float dt)

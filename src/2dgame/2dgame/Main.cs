@@ -13,6 +13,7 @@ using Barebones.Framework;
 using _2dgame.Components;
 using Microsoft.Xna.Framework.Graphics;
 using _2dgame.EngineComponents;
+using Meat.Input;
 
 namespace _2dgame
 {
@@ -41,10 +42,19 @@ namespace _2dgame
             Matrix projection = Matrix.CreateOrthographic(0.1f * DESIRED_SCREEN_SIZE.X, 0.1f * DESIRED_SCREEN_SIZE.Y, -1, 1);
             Owner.AddComponent(new RawRenderer(projection, Color.White));
 
-            m_Physics = new Physics(-20f * Vector2.UnitY, -0.5f * 0.1f * DESIRED_SCREEN_SIZE, 0.5f * 0.1f * DESIRED_SCREEN_SIZE);
+            Vector2 minWorld = -0.5f * 0.1f * DESIRED_SCREEN_SIZE;
+            minWorld.X = -1000;
+            Vector2 maxWorld = 0.5f * 0.1f * DESIRED_SCREEN_SIZE;
+            maxWorld.X = 1000;
+            maxWorld.Y = 1000;
+
+            m_Physics = new Physics(-20f * Vector2.UnitY, minWorld, maxWorld);
             Owner.AddComponent(m_Physics);
 
-            Owner.AddComponent(new Touch());
+            Owner.AddComponent(new CameraMan());
+
+            Owner.AddComponent(new TouchReader());
+            Owner.AddComponent(new KeyboardReader());
 
             Owner.Forum.RegisterListener<InitializeMessage>(OnInitialiser);
             Owner.Forum.RegisterListener<CreatedMessage>(OnCreated);
@@ -72,10 +82,17 @@ namespace _2dgame
             Entity body = Owner.CreateEntity();
             body.Transform = Matrix.CreateTranslation(-15 * Vector3.UnitY);
             Vector2 bodySize = new Vector2(30, 19.8f);
-            body.AddComponent(m_Physics.CreateRectangle(0.5f * bodySize, 1.0f, FarseerPhysics.Dynamics.BodyType.Static));
+            
+            body.AddComponent(m_Physics.CreateRectangle(0.5f * bodySize, 1.0f, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            m_Physics.ConstrainAngle(0, 100, 0.4f, body); //make body stay upright
+
             body.AddComponent(new Selectable(new BoundingBox(new Vector3(-0.5f * bodySize, -2), new Vector3(0.5f * bodySize, 2))));
             body.AddComponent(new FollowFinger());
+            body.AddComponent(new Queen(20, 5000));
             m_EZBakeOven.MakeSprite(body, bodySize, "body");
+
+            //make camera follow body
+            camera.AddComponent(new FollowEntity(body, 5 * Vector3.UnitY));
 
             //create neck
             Entity neck = body.CreateChild();
@@ -83,8 +100,8 @@ namespace _2dgame
 
             //create head
             Entity head = neck.CreateChild();
-            head.AddComponent(m_Physics.CreateCapsule(5, 5, 1.0f, FarseerPhysics.Dynamics.BodyType.Static));
             head.AddComponent(new LeftRightComponent(-30, 30, 0.75f, -0.5f * 17.5f * Vector3.UnitY));
+            head.AddComponent(m_Physics.CreateCapsule(5, 5, 1.0f, FarseerPhysics.Dynamics.BodyType.Static));
             m_EZBakeOven.MakeSprite(head, new Vector2(15.2f, 17.5f), "head");
 
             //create mouth hinge

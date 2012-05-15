@@ -10,7 +10,7 @@ namespace _2dgame
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (Game2D game = new Game2D())
             {
                 game.Run();
             }
