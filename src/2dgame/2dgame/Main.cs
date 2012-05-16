@@ -48,7 +48,10 @@ namespace _2dgame
             maxWorld.X = 1000;
             maxWorld.Y = 1000;
 
-            m_Physics = new Physics(-20f * Vector2.UnitY, minWorld, maxWorld);
+            m_Physics = new Physics(-20f * Vector2.UnitY, minWorld, maxWorld)
+                {
+                    DebugView = false
+                };
             Owner.AddComponent(m_Physics);
 
             Owner.AddComponent(new CameraMan());
@@ -78,6 +81,14 @@ namespace _2dgame
             camera.AddComponent(new Camera());
             camera.Transform = Matrix.CreateLookAt(-Vector3.UnitZ, Vector3.Zero, Vector3.UnitY);
 
+            //create fanboys
+            CreateBeefeater(new Vector3(40, -20, 0));
+            CreateBeefeater(new Vector3(30, -20, 0));
+            CreateBeefeater(new Vector3(20, -20, 0));
+            CreateBeefeater(new Vector3(-20, -20, 0));
+            CreateBeefeater(new Vector3(-30, -20, 0));
+            CreateBeefeater(new Vector3(-40, -20, 0));
+
             //create body
             Entity body = Owner.CreateEntity();
             body.Transform = Matrix.CreateTranslation(-15 * Vector3.UnitY);
@@ -96,7 +107,7 @@ namespace _2dgame
 
             //create neck
             Entity neck = body.CreateChild();
-            neck.Transform = Matrix.CreateTranslation(6 * Vector3.UnitY);
+            neck.Transform = Matrix.CreateTranslation(15 * Vector3.UnitY);
 
             //create head
             Entity head = neck.CreateChild();
@@ -133,6 +144,28 @@ namespace _2dgame
             flame.Transform = Matrix.CreateTranslation(10 * Vector3.UnitY);
             m_EZBakeOven.MakeSprite(flame, new Vector2(10, 10), "flame", 4, 10);
             flame.GetComponent<RenderSettings>().Blend = BlendState.Additive;
+        }
+
+        private void CreateBeefeater(Vector3 pos)
+        {
+            float beefeater_distance = 10.5f;
+
+            Entity beefeater = Owner.CreateEntity();
+            beefeater.Transform = Matrix.CreateScale(0.25f) * Matrix.CreateTranslation(pos);
+
+            Entity beef_legs_joint = beefeater.CreateChild();
+            beef_legs_joint.Transform = Matrix.CreateTranslation(-beefeater_distance * Vector3.UnitY);
+
+            Entity beef_legs = beef_legs_joint.CreateChild();
+            beef_legs.AddComponent(new LeftRightComponent(-10, 10, 1, -beefeater_distance * Vector3.UnitY));
+            m_EZBakeOven.MakeSprite(beef_legs, 0.1f * new Vector2(105, 219), "beefeater_legs");
+
+            Entity beef_body_joint = beefeater.CreateChild();
+            beef_body_joint.Transform = Matrix.CreateTranslation(beefeater_distance * Vector3.UnitY);
+
+            Entity beef_body = beef_body_joint.CreateChild();
+            beef_body.AddComponent(new LeftRightComponent(-10, 10, -1, beefeater_distance * Vector3.UnitY));
+            m_EZBakeOven.MakeSprite(beef_body, 0.1f * new Vector2(180, 351), "beefeater_body");
         }
     }
 }

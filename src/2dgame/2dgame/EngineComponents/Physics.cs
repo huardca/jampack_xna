@@ -25,6 +25,12 @@ namespace _2dgame.EngineComponents
         RawRenderer m_Renderer;
         Camera m_Camera;
 
+        public bool DebugView
+        {
+            get { return m_View.Enabled; }
+            set { m_View.Enabled = value; }
+        }
+
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield return new Dependency<PhysicsComponent>(item => { }, item => item.DisposePhysics(m_World));
@@ -36,7 +42,6 @@ namespace _2dgame.EngineComponents
         {
             m_World = new World(gravity, new FarseerPhysics.Collision.AABB(ref min, ref max));
             m_View = new DebugViewXNA(m_World);
-            m_View.Enabled = false;
             m_View.Flags |= DebugViewFlags.PerformanceGraph;
             m_View.AppendFlags(DebugViewFlags.Shape);
             m_View.AppendFlags(DebugViewFlags.DebugPanel);
