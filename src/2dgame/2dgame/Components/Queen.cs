@@ -43,10 +43,10 @@ namespace _2dgame.Components
             vel.X = 0;
 
             if (m_Keyboard.IsKeyDown(Keys.Right))
-                vel.X -= m_Speed;
+                vel.X += m_Speed;
 
             if (m_Keyboard.IsKeyDown(Keys.Left))
-                vel.X += m_Speed;
+                vel.X -= m_Speed;
 
             m_Physics.LinearVelocity = vel;
         }

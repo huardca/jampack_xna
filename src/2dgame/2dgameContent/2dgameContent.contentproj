@@ -84,6 +84,56 @@
       <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bumps_back.png">
+      <Name>bumps_back</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="bumps_front.png">
+      <Name>bumps_front</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="grass.png">
+      <Name>grass</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="sunbody.png">
+      <Name>sunbody</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="sunface.png">
+      <Name>sunface</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="sunray1.png">
+      <Name>sunray1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="sunray2.png">
+      <Name>sunray2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+    <Compile Include="trees.png">
+      <Name>trees</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ResizeToPowerOfTwo>True</ProcessorParameters_ResizeToPowerOfTwo>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

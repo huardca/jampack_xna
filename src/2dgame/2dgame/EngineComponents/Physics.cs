@@ -14,6 +14,7 @@ using Meat.Rendering;
 using Barebones.Xna;
 using FarseerPhysics.Dynamics.Joints;
 using Barebones.Framework;
+using FarseerPhysics.Common;
 
 namespace _2dgame.EngineComponents
 {
@@ -100,6 +101,20 @@ namespace _2dgame.EngineComponents
         public PhysicsComponent CreateCapsule(float height, float radius, float density, BodyType bodytype)
         {
             Body body = BodyFactory.CreateCapsule(m_World, height, radius, density);
+            body.BodyType = bodytype;
+            return new PhysicsComponent(body);
+        }
+
+        public PhysicsComponent CreateTriangle(float width, float height, float density, BodyType bodytype)
+        {
+            Vertices verts = new Vertices(new Vector2[]
+            {
+                new Vector2(-0.5f * width, 0.5f * height),
+                new Vector2(0, -0.5f * height),
+                new Vector2(0.5f * width, 0.5f * height)
+            });
+
+            Body body = BodyFactory.CreatePolygon(m_World, verts, density);
             body.BodyType = bodytype;
             return new PhysicsComponent(body);
         }
