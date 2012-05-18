@@ -13,6 +13,7 @@ namespace _2dgame.Components
     class PhysicsComponent : EntityComponent, Barebones.Framework.IUpdateable
     {
         Body m_Body;
+        List<CollisionMsg> m_ToNotify = new List<CollisionMsg>();
 
         public BodyType BodyType
         {
@@ -35,6 +36,7 @@ namespace _2dgame.Components
         public PhysicsComponent(Body body)
         {
             m_Body = body;
+            m_Body.UserData = this;
         }
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
@@ -45,6 +47,8 @@ namespace _2dgame.Components
         protected override void OnOwnerSet()
         {
             AssignEntityTransformToBody();
+
+            Owner.Forum.RegisterListener<TransformForcedMsg>(msg => AssignEntityTransformToBody());
 
             base.OnOwnerSet();
         }
@@ -65,6 +69,14 @@ namespace _2dgame.Components
                 AssignEntityTransformToBody();
             else
                 AssignBodyTransformToEntity();
+
+            foreach (CollisionMsg msg in m_ToNotify)
+            {
+                msg.First.Forum.Fire(msg);
+                msg.Second.Forum.Fire(msg);
+            }
+
+            m_ToNotify.Clear();
         }
 
         public void DisposePhysics(World world)
@@ -80,6 +92,24 @@ namespace _2dgame.Components
             Matrix transform = Owner.GetWorld();
             double angle = Math.Atan2(0, 1) - Math.Atan2(transform.Up.X, transform.Up.Y);
             m_Body.SetTransform(new Vector2(transform.Translation.X, transform.Translation.Y), (float)angle);
+
+            m_Body.Awake = true;
+            m_Body.OnCollision += new OnCollisionEventHandler(OnBodyCollision);
+        }
+
+        bool OnBodyCollision(Fixture fixtureA, Fixture fixtureB, FarseerPhysics.Dynamics.Contacts.Contact contact)
+        {
+            PhysicsComponent other = fixtureB.Body.UserData as PhysicsComponent;
+            if (other == null)
+                return true;
+
+            m_ToNotify.Add(new CollisionMsg()
+            {
+                First = Owner,
+                Second = other.Owner
+            });
+
+            return true;
         }
 
         private void AssignBodyTransformToEntity()

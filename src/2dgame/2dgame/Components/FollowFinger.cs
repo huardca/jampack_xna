@@ -28,6 +28,8 @@ namespace _2dgame.Components
             Matrix current = Owner.Transform;
             current.Translation += new Vector3(msg.WorldDelta.X, msg.WorldDelta.Y, 0);
             Owner.Transform = current;
+
+            Owner.FireDown(new TransformForcedMsg());
         }
     }
 }

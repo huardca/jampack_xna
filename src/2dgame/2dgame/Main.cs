@@ -14,6 +14,7 @@ using _2dgame.Components;
 using Microsoft.Xna.Framework.Graphics;
 using _2dgame.EngineComponents;
 using Meat.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace _2dgame
 {
@@ -55,7 +56,7 @@ namespace _2dgame
 
             m_Physics = new Physics(-9.8f * Vector2.UnitY, minWorld, maxWorld)
                 {
-                    DebugView = true
+                    DebugView = false
                 };
             Owner.AddComponent(m_Physics);
 
@@ -79,8 +80,18 @@ namespace _2dgame
                                                 DisplayOrientation.LandscapeRight;
         }
 
+        //this is like the loading phase, it will let us use these items as handles on entities later on
+        void RegisterResources()
+        {
+            ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
+            loader.AddResource(new ContentResource<SoundEffect>("laugh"));
+            loader.AddResource(new ContentResource<SoundEffect>("fanfare"));
+        }
+
         void OnInitialise(InitializeMessage msg)
         {
+            RegisterResources();
+
             //add the camera to view the scene
             Entity camera = Owner.CreateEntity();
             camera.AddComponent(new Camera());
@@ -124,6 +135,8 @@ namespace _2dgame
             Entity head = neck.CreateChild();
             head.AddComponent(new LeftRightComponent(-30, 30, 0.75f, -0.5f * 1.7f * Vector3.UnitY));
             head.AddComponent(m_Physics.CreateCapsule(0.25f, 0.5f, 1.0f, FarseerPhysics.Dynamics.BodyType.Static));
+            head.AddComponent(new SoundOnCollision());
+            head.AddComponent(new Handle<SoundEffect>("laugh"));
             m_EZBakeOven.MakeSprite(head, IMAGE_SCALE * new Vector2(152, 175), "head");
 
             //create mouth hinge
@@ -161,6 +174,12 @@ namespace _2dgame
             grass.Transform = Matrix.CreateTranslation(background_translation);
             grass.AddComponent(new FollowEntity(camera, Vector3.Zero, false, true));
             m_EZBakeOven.MakeParallaxSprite(grass, IMAGE_SCALE * new Vector2(800, 600), "grass", 1.0f);
+
+            ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
+            loader.ForceLoadAll(); // so as to not have glitches in the first couple seconds while all the items are loaded as they are accessed
+
+            // enter: The Queen!
+            loader.GetResource("fanfare").Get<SoundEffect>().Play();
         }
 
         private void CreateBackground(Entity camera, Vector3 translation)
@@ -168,6 +187,11 @@ namespace _2dgame
             Vector2 backsize = IMAGE_SCALE * new Vector2(800, 600);
             Vector3 delta_follow = Vector3.Zero;
             Matrix background_translation = Matrix.CreateTranslation(translation);
+
+            Entity clouds = Owner.CreateEntity();
+            clouds.Transform = background_translation;
+            clouds.AddComponent(new FollowEntity(camera, delta_follow, false, true));
+            m_EZBakeOven.MakeParallaxSprite(clouds, backsize, "clouds", 0.3f);
 
             Entity sun = Owner.CreateEntity();
             sun.Transform = background_translation;

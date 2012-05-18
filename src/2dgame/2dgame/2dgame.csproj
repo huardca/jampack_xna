@@ -73,6 +73,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CollisionSound.cs" />
     <Compile Include="Components\FollowEntity.cs" />
     <Compile Include="Components\FollowFinger.cs" />
     <Compile Include="Components\JointComponent.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Components\UpDownComponent.cs" />
     <Compile Include="EngineComponents\Physics.cs" />
     <Compile Include="EngineComponents\TouchReader.cs" />
+    <Compile Include="Events\PhysicsEvents.cs" />
     <Compile Include="Events\TouchEvents.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

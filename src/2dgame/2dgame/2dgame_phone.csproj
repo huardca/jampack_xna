@@ -79,6 +79,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CollisionSound.cs" />
     <Compile Include="Components\FollowEntity.cs" />
     <Compile Include="Components\FollowFinger.cs" />
     <Compile Include="Components\JointComponent.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Components\UpDownComponent.cs" />
     <Compile Include="EngineComponents\Physics.cs" />
     <Compile Include="EngineComponents\TouchReader.cs" />
+    <Compile Include="Events\PhysicsEvents.cs" />
     <Compile Include="Events\TouchEvents.cs" />
     <Compile Include="Game2D.cs" />
     <Compile Include="Main.cs" />
