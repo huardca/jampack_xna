@@ -1,0 +1,3 @@
+[submodule "src/framework"]
+	path = src/framework
+	url = git://github.com/jumonb/meat_csharp.git
