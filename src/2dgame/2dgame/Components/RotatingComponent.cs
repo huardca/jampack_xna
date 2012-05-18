@@ -9,7 +9,7 @@ namespace _2dgame.Components
 {
     class RotatingComponent : EntityComponent, Barebones.Framework.IUpdateable
     {
-        Matrix m_Rot;
+        float m_Radians;
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
@@ -18,12 +18,12 @@ namespace _2dgame.Components
 
         public RotatingComponent(float degrees_per_second)
         {
-            m_Rot = Matrix.CreateRotationZ(MathHelper.ToRadians(degrees_per_second / 30.0f));
+            m_Radians = MathHelper.ToRadians(degrees_per_second);
         }
 
         public void Update(float dt)
         {
-            Owner.Transform *= m_Rot;
+            Owner.Rotate(Vector3.UnitZ, m_Radians * dt);
         }
     }
 }

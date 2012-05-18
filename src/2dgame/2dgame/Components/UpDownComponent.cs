@@ -37,7 +37,7 @@ namespace _2dgame.Components
             float ratio = 0.5f * (float)Math.Sin(m_TimeAccumulator * m_Speed * MathHelper.TwoPi) + 0.5f;
             float mult = MathHelper.Lerp(m_Min, m_Max, ratio);
 
-            Owner.Transform = Matrix.CreateTranslation(mult * m_Axis);
+            Owner.SetTranslation(mult * m_Axis);
         }
     }
 }
