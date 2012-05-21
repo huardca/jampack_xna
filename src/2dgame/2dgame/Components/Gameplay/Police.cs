@@ -7,6 +7,7 @@ using Barebones.Dependencies;
 using _2dgame.EngineComponents;
 using Microsoft.Xna.Framework;
 using Barebones.Framework;
+using _2dgame.Events;
 
 namespace _2dgame.Components.Gameplay
 {
@@ -17,10 +18,15 @@ namespace _2dgame.Components.Gameplay
         JointComponent m_Joint;
 
         float m_Force;
+        float m_Time = 0;
 
-        public Police(float force)
+        readonly float m_Cooldown;
+
+
+        public Police(float force, float cooldown)
         {
             m_Force = force;
+            m_Cooldown = cooldown;
         }
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
@@ -39,16 +45,33 @@ namespace _2dgame.Components.Gameplay
 
         void OnCollision(CollisionMsg msg)
         {
+            if (m_Time > 1e-5)
+                return;
+
             Entity target = msg.First == Owner ? msg.Second : msg.First;
 
             if (target.GetComponent<Manifestant>() != null)
+            {
                 target.Dispose();
+                m_Time = m_Cooldown;
+            }
+            else if (target.GetComponent<MainCharacter>() != null)
+            {
+                Owner.Engine.Forum.Fire<PlayerDeadMsg>(new PlayerDeadMsg()
+                    {
+                        Player = target
+                    });
+                Owner.Dispose();
+            }
         }
 
         public void Update(float dt)
         {
-            if (m_Recrutable.Target == null)
+            if (m_Recrutable.Target == null || m_Time > 1e-5)
+            {
+                m_Time -= dt;
                 return;
+            }
 
             Vector3 playerPos = m_Recrutable.Target.GetWorldTranslation();
 

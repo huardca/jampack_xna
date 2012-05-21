@@ -7,6 +7,7 @@ using Barebones.Dependencies;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Meat.Input;
+using _2dgame.Events;
 
 namespace _2dgame.Components
 {
@@ -27,6 +28,18 @@ namespace _2dgame.Components
         public MainCharacter(float speed)
         {
             m_Speed = speed;
+        }
+
+        protected override void OnOwnerSet()
+        {
+            Owner.Engine.Forum.RegisterListener<PlayerDeadMsg>(OnPlayerDead);
+
+            base.OnOwnerSet();
+        }
+
+        void OnPlayerDead(PlayerDeadMsg msg)
+        {
+            this.Dispose();
         }
 
         public void Update(float dt)
