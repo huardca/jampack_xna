@@ -14,6 +14,8 @@ namespace _2dgame.EngineComponents
         MainCharacter m_Player;
         List<Recrutable> m_Recrutable = new List<Recrutable>();
         List<Recruter> m_Recruters = new List<Recruter>();
+        public float InfluenceRadius
+        { get; set; }
 
         public MainCharacter Player
         { get { return m_Player; } }

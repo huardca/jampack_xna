@@ -4,34 +4,50 @@ using System.Linq;
 using System.Text;
 using Barebones.Components;
 using Barebones.Framework;
+using _2dgame.EngineComponents;
+using Barebones.Dependencies;
+using Microsoft.Xna.Framework;
 
 namespace _2dgame.Components.Gameplay
 {
-    class Recrutable : EntityComponent
+    class Recrutable : EntityComponent, Barebones.Framework.IUpdateable
     {
         public Entity Target
         { get; set; }
+        GameplayManager m_GM;
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
+            yield return new Dependency<GameplayManager>(item => m_GM = item);
             yield break;
         }
 
         protected override void OnOwnerSet()
         {
-            Owner.Forum.RegisterListener<CollisionMsg>(OnCollision);
-
             base.OnOwnerSet();
         }
 
-        void OnCollision(CollisionMsg msg)
+        public void Update(float dt)
         {
-            Entity target = msg.First == Owner ? msg.Second : msg.First;
-            Recruter recruter = target.GetComponent<Recruter>();
-            if (recruter == null)
+            if(m_GM.Player == null)
                 return;
 
-            Target = recruter.Owner;
+            Vector3 playerPos = m_GM.Player.Owner.GetWorldTranslation();
+
+            Vector3 current = Owner.GetWorldTranslation();
+
+            Vector3 toplayer3D = playerPos - current;
+            Vector2 toplayer = new Vector2(toplayer3D.X, toplayer3D.Y);
+
+            if (toplayer.LengthSquared() < m_GM.InfluenceRadius*m_GM.InfluenceRadius)
+            {
+                Target = m_GM.Player.Owner;
+            }
+            else
+            {
+                Target = null;
+            }
+            
         }
     }
 }

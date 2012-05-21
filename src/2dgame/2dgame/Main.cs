@@ -67,7 +67,10 @@ namespace _2dgame
 
             Owner.AddComponent(new TouchReader());
             Owner.AddComponent(new KeyboardReader());
-            Owner.AddComponent(new GameplayManager());
+            Owner.AddComponent(new GameplayManager()
+            {
+                InfluenceRadius = 5f
+            });
 
             Owner.Forum.RegisterListener<InitializeMessage>(OnInitialise);
             Owner.Forum.RegisterListener<CreatedMessage>(OnCreated);
@@ -135,6 +138,14 @@ namespace _2dgame
                 manifestant.AddComponent(new Manifestant(0.10f));
                 manifestant.AddComponent(new Recrutable());
             }
+
+            Entity carreVert = Owner.CreateEntity();
+            carreVert.Transform = Matrix.CreateTranslation(new Vector3(3f, 3f, 0));
+            m_EZBakeOven.MakeSprite(carreVert, 0.006f * new Vector2(21, 25), "vert_face");
+            carreVert.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            carreVert.GetComponent<PhysicsComponent>().LinearDamping = 2;
+            carreVert.AddComponent(new CarreVert());
+            carreVert.AddComponent(new Recrutable());
 
             int policecount = 10;
             Matrix pos = Matrix.CreateTranslation(new Vector3(0, 10, 0));

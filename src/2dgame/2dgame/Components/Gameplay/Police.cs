@@ -39,7 +39,10 @@ namespace _2dgame.Components.Gameplay
             Entity target = msg.First == Owner ? msg.Second : msg.First;
 
             if (target.GetComponent<Manifestant>() != null)
+            {
                 target.Dispose();
+                m_Gameplay.InfluenceRadius -= 0.02f;
+            }
         }
 
         public void Update(float dt)

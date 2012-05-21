@@ -13,6 +13,8 @@ namespace _2dgame.Components.Gameplay
     {
         PhysicsComponent m_Physics;
         Recrutable m_Recrutable;
+        bool m_PickedUp = false;
+        GameplayManager m_GM;
 
         JointComponent m_Joint;
         float m_Force;
@@ -27,6 +29,7 @@ namespace _2dgame.Components.Gameplay
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
             yield return new Dependency<Recrutable>(item => m_Recrutable = item);
             yield return new Dependency<JointComponent>(item => m_Joint = item);
+            yield return new Dependency<GameplayManager>(item => m_GM = item);
         }
 
         public void Arreter()
@@ -37,7 +40,16 @@ namespace _2dgame.Components.Gameplay
         public void Update(float dt)
         {
             if (m_Recrutable.Target == null)
+            {
+                m_PickedUp = false;
                 return;
+            }
+
+            if (m_PickedUp == false)
+            {
+                m_PickedUp = true;
+                m_GM.InfluenceRadius += 0.05f;
+            }
 
             Vector3 playerPos = m_Recrutable.Target.GetWorldTranslation();
 
