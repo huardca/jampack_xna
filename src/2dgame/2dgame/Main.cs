@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using _2dgame.EngineComponents;
 using Meat.Input;
 using Microsoft.Xna.Framework.Audio;
+using _2dgame.Components.Gameplay;
 
 namespace _2dgame
 {
@@ -22,6 +23,8 @@ namespace _2dgame
     {
         static readonly Vector2 DESIRED_SCREEN_SIZE = new Vector2(800, 480);
         const float IMAGE_SCALE = 0.01f;
+
+        static readonly Vector2 WORLD_SIZE = new Vector2(2048, 1094);
 
         Random m_Rand = new Random();
         EZBake m_EZBakeOven;
@@ -48,15 +51,15 @@ namespace _2dgame
             Matrix projection = Matrix.CreateOrthographic(IMAGE_SCALE * DESIRED_SCREEN_SIZE.X, IMAGE_SCALE * DESIRED_SCREEN_SIZE.Y, -1, 1);
             Owner.AddComponent(new RawRenderer(projection, Color.SkyBlue));
 
-            Vector2 minWorld = -0.5f * IMAGE_SCALE * DESIRED_SCREEN_SIZE;
+            Vector2 minWorld = -0.5f * IMAGE_SCALE * WORLD_SIZE;
             minWorld.X = -1000;
-            Vector2 maxWorld = 0.5f * IMAGE_SCALE * DESIRED_SCREEN_SIZE;
+            Vector2 maxWorld = 0.5f * IMAGE_SCALE * WORLD_SIZE;
             maxWorld.X = 1000;
             maxWorld.Y = 1000;
 
-            m_Physics = new Physics(-9.8f * Vector2.UnitY, minWorld, maxWorld)
+            m_Physics = new Physics(Vector2.Zero, minWorld, maxWorld)
                 {
-                    DebugView = false
+                    DebugView = true
                 };
             Owner.AddComponent(m_Physics);
 
@@ -64,6 +67,7 @@ namespace _2dgame
 
             Owner.AddComponent(new TouchReader());
             Owner.AddComponent(new KeyboardReader());
+            Owner.AddComponent(new GameplayManager());
 
             Owner.Forum.RegisterListener<InitializeMessage>(OnInitialise);
             Owner.Forum.RegisterListener<CreatedMessage>(OnCreated);
@@ -84,8 +88,6 @@ namespace _2dgame
         void RegisterResources()
         {
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
-            loader.AddResource(new ContentResource<SoundEffect>("laugh"));
-            loader.AddResource(new ContentResource<SoundEffect>("fanfare"));
         }
 
         void OnInitialise(InitializeMessage msg)
@@ -101,85 +103,29 @@ namespace _2dgame
 
             Entity queen = Owner.CreateEntity();
 
-            //make camera follow queen
-            camera.AddComponent(new FollowEntity(queen, 0.5f * Vector3.UnitY, false, true));
+            Entity background = Owner.CreateEntity();
+            background.Transform = Matrix.CreateRotationZ(MathHelper.ToRadians(34f));
+            m_EZBakeOven.MakeSprite(background, IMAGE_SCALE * WORLD_SIZE, "emily_gamelin");
 
-            Vector3 background_translation = -0.5f * Vector3.UnitY;
-            CreateBackground(camera, background_translation);
+            Entity character = Owner.CreateEntity();
+            m_EZBakeOven.MakeSprite(character, 0.005f * new Vector2(300, 289), "player");
+            character.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            character.AddComponent(new MainCharacter(1));
 
-            //create fanboys
-            CreateBeefeater(new Vector3(4, -2, 0));
-            CreateBeefeater(new Vector3(3, -2, 0));
-            CreateBeefeater(new Vector3(2, -2, 0));
-            CreateBeefeater(new Vector3(-2, -2, 0));
-            CreateBeefeater(new Vector3(-3, -2, 0));
-            CreateBeefeater(new Vector3(-4, -2, 0));
+            Entity building = Owner.CreateEntity();
+            building.Transform = Matrix.CreateTranslation( new Vector3(1, 1, 0) );
+            building.AddComponent(m_Physics.CreateRectangle(new Vector2(2, 4), 1, FarseerPhysics.Dynamics.BodyType.Static));
 
-            //create body
-            queen.Transform = Matrix.CreateTranslation(-1.5f * Vector3.UnitY);
-            Vector2 bodySize = IMAGE_SCALE * new Vector2(300, 198);
-            
-            queen.AddComponent(m_Physics.CreateRectangle(0.5f * bodySize, 1.0f, FarseerPhysics.Dynamics.BodyType.Dynamic));
-            m_Physics.ConstrainAngle(0, 0.01f, 0.4f, queen); //make body stay upright
+            Entity police = Owner.CreateEntity();
+            police.Transform = Matrix.CreateTranslation(new Vector3(-2, -2, 0));
+            m_EZBakeOven.MakeSprite(police, 0.005f * new Vector2(300, 289), "police");
+            police.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            police.AddComponent(new Police(0.25f));
 
-            queen.AddComponent(new Selectable(new BoundingBox(new Vector3(-0.5f * bodySize, -2), new Vector3(0.5f * bodySize, 2))));
-            queen.AddComponent(new FollowFinger());
-            queen.AddComponent(new Queen(2, 10));
-            m_EZBakeOven.MakeSprite(queen, bodySize, "body");
 
-            //create neck
-            Entity neck = queen.CreateChild();
-            neck.Transform = Matrix.CreateTranslation(1.5f * Vector3.UnitY);
-
-            //create head
-            Entity head = neck.CreateChild();
-            head.AddComponent(new LeftRightComponent(-30, 30, 0.75f, -0.5f * 1.7f * Vector3.UnitY));
-            head.AddComponent(m_Physics.CreateCapsule(0.25f, 0.5f, 1.0f, FarseerPhysics.Dynamics.BodyType.Static));
-            head.AddComponent(new SoundOnCollision());
-            head.AddComponent(new Handle<SoundEffect>("laugh"));
-            m_EZBakeOven.MakeSprite(head, IMAGE_SCALE * new Vector2(152, 175), "head");
-
-            //create mouth hinge
-            Entity mouthHinge = head.CreateChild();
-            mouthHinge.Transform = Matrix.CreateTranslation(-0.85f * Vector3.UnitY);
-
-            //create mouth
-            Entity mouth = mouthHinge.CreateChild();
-            mouth.AddComponent(new UpDownComponent(-0.2f, 0, 0.3f, Vector3.UnitY));
-            m_EZBakeOven.MakeSprite(mouth, IMAGE_SCALE * new Vector2(79, 30), "mouth");
-
-            //create flowers
-            foreach(int i in Enumerable.Range(1, 10))
-            {
-                Entity flowers = Owner.CreateEntity();
-                flowers.Transform = Matrix.CreateTranslation((2 + i * 1) * Vector3.UnitY + ((float)m_Rand.NextDouble() - 0.5f) * Vector3.UnitX);
-                flowers.AddComponent(m_Physics.CreateTriangle(0.25f, 0.5f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-
-                m_EZBakeOven.MakeSprite(flowers, IMAGE_SCALE * new Vector2(100, 100), "flowers");
-            }
-
-            //create cake
-            Entity cake = Owner.CreateEntity();
-            cake.Transform = Matrix.CreateTranslation(-2 * Vector3.UnitY);
-            m_EZBakeOven.MakeSprite(cake, IMAGE_SCALE * new Vector2(200, 200), "cake");
-
-            //create flame
-            Entity flame = cake.CreateChild();
-            flame.Transform = Matrix.CreateTranslation(Vector3.UnitY);
-            m_EZBakeOven.MakeSprite(flame, IMAGE_SCALE * new Vector2(100, 100), "flame", 4, 10);
-            flame.GetComponent<RenderSettings>().BlendState = BlendState.Additive;
-
-            //add grass in front of everything
-            Entity grass = Owner.CreateEntity();
-            grass.Transform = Matrix.CreateTranslation(background_translation);
-            grass.AddComponent(new FollowEntity(camera, Vector3.Zero, false, true));
-            m_EZBakeOven.MakeParallaxSprite(grass, IMAGE_SCALE * new Vector2(800, 600), "grass", 1.0f);
 
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
             loader.ForceLoadAll(); // so as to not have glitches in the first couple seconds while all the items are loaded as they are accessed
-
-            // enter: The Queen!
-            loader.GetResource("fanfare").Get<SoundEffect>().Play();
         }
 
         private void CreateBackground(Entity camera, Vector3 translation)
