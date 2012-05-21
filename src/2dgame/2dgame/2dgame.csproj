@@ -91,6 +91,7 @@
     <Compile Include="EngineComponents\GameplayManager.cs" />
     <Compile Include="EngineComponents\Physics.cs" />
     <Compile Include="EngineComponents\TouchReader.cs" />
+    <Compile Include="Events\GameplayMessages.cs" />
     <Compile Include="Events\PhysicsEvents.cs" />
     <Compile Include="Events\TouchEvents.cs" />
     <Compile Include="Main.cs" />
