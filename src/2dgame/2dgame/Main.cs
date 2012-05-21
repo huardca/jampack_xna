@@ -143,7 +143,7 @@ namespace _2dgame
             {
                 Entity police = Owner.CreateEntity();
                 police.Transform = pos;
-                m_EZBakeOven.MakeSprite(police, 0.002f * new Vector2(300, 289), "police");
+                m_EZBakeOven.MakeSprite(police, 0.001f * new Vector2(300, 289), "police_bas", 3, 2);
                 police.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
                 police.GetComponent<PhysicsComponent>().LinearDamping = 4;
                 police.AddComponent(new Police(0.1f));
