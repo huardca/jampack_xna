@@ -33,6 +33,11 @@ namespace _2dgame.Components
             set { m_Body.AngularVelocity = value; }
         }
 
+        public bool IsSensor
+        {
+            set { m_Body.IsSensor = value; }
+        }
+
         public PhysicsComponent(Body body)
         {
             m_Body = body;
