@@ -61,7 +61,7 @@ namespace _2dgame
 
             m_Physics = new Physics(Vector2.Zero, 10 * minWorld, 10 * maxWorld)
                 {
-                    DebugView = true
+                    DebugView = false
                 };
 
             Owner.AddComponent(m_Physics);
@@ -72,7 +72,7 @@ namespace _2dgame
             Owner.AddComponent(new KeyboardReader());
             Owner.AddComponent(new GameplayManager()
             {
-                InfluenceRadius = 5f
+                InfluenceRadius = 1f
             });
 
             Owner.Forum.RegisterListener<InitializeMessage>(OnInitialise);
@@ -116,11 +116,11 @@ namespace _2dgame
             character.GetComponent<PhysicsComponent>().LinearDamping = 3;
             character.GetComponent<PhysicsComponent>().AngularDamping = 1000;
             character.AddComponent(new MainCharacter(1));
+            character.AddComponent(new Recruter());
 
-            Entity characterJoint = character.CreateChild();
-            characterJoint.AddComponent(m_Physics.CreateCircle(0.8f, 1, FarseerPhysics.Dynamics.BodyType.Static));
-            characterJoint.GetComponent<PhysicsComponent>().IsSensor = true;
-            characterJoint.AddComponent(new Recruter());
+            Entity radiusBillboard = character.CreateChild();
+            m_EZBakeOven.MakeSprite(radiusBillboard, new Vector2(2, 2), "radius");
+            radiusBillboard.AddComponent(new InfluenceComponent());
 
             m_Physics.ConstrainAngle(0, 0.0003f, 0.2f, character);
 

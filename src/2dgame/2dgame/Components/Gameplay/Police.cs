@@ -41,7 +41,7 @@ namespace _2dgame.Components.Gameplay
         protected override void OnOwnerSet()
         {
             Owner.Forum.RegisterListener<CollisionMsg>(OnCollision);
-            
+
             base.OnOwnerSet();
         }
 
