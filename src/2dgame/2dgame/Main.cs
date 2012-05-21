@@ -120,9 +120,8 @@ namespace _2dgame
             police.Transform = Matrix.CreateTranslation(new Vector3(-2, -2, 0));
             m_EZBakeOven.MakeSprite(police, 0.005f * new Vector2(300, 289), "police");
             police.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            police.GetComponent<PhysicsComponent>().LinearDamping = 3;
             police.AddComponent(new Police(0.25f));
-
-
 
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
             loader.ForceLoadAll(); // so as to not have glitches in the first couple seconds while all the items are loaded as they are accessed

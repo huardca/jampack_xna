@@ -33,6 +33,12 @@ namespace _2dgame.Components
             set { m_Body.AngularVelocity = value; }
         }
 
+        public float LinearDamping
+        {
+            get { return m_Body.LinearDamping; }
+            set { m_Body.LinearDamping = value; }
+        }
+
         public bool IsSensor
         {
             set { m_Body.IsSensor = value; }
