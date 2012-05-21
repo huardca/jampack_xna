@@ -135,12 +135,21 @@ namespace _2dgame
                 manifestant.AddComponent(new Recrutable());
             }
 
-            Entity police = Owner.CreateEntity();
-            police.Transform = Matrix.CreateTranslation(new Vector3(-2, -2, 0));
-            m_EZBakeOven.MakeSprite(police, 0.005f * new Vector2(300, 289), "police");
-            police.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-            police.GetComponent<PhysicsComponent>().LinearDamping = 2;
-            police.AddComponent(new Police(0.25f));
+            int policecount = 10;
+            Matrix pos = Matrix.CreateTranslation(new Vector3(0, 10, 0));
+            Matrix rot = Matrix.CreateRotationZ(MathHelper.TwoPi / policecount);
+
+            for (int i = 0; i < policecount; i++)
+            {
+                Entity police = Owner.CreateEntity();
+                police.Transform = pos;
+                m_EZBakeOven.MakeSprite(police, 0.002f * new Vector2(300, 289), "police");
+                police.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+                police.GetComponent<PhysicsComponent>().LinearDamping = 4;
+                police.AddComponent(new Police(0.1f));
+
+                pos *= rot;
+            }
 
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
             loader.ForceLoadAll(); // so as to not have glitches in the first couple seconds while all the items are loaded as they are accessed
