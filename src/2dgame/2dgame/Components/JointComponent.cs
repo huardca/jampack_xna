@@ -10,14 +10,19 @@ namespace _2dgame.Components
 {
     class JointComponent : EntityComponent
     {
-        Joint m_Joint;
+        FixedAngleJoint m_Joint;
 
+        public float TargetAngle
+        { 
+            get { return m_Joint.TargetAngle; }
+            set { m_Joint.TargetAngle = value; }
+        }
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield break;
         }
 
-        public JointComponent(Joint joint)
+        public JointComponent(FixedAngleJoint joint)
         {
             m_Joint = joint;
         }
