@@ -16,6 +16,7 @@ namespace _2dgame.Components.Gameplay
         PhysicsComponent m_Physics;
         Recrutable m_Recrutable;
         JointComponent m_Joint;
+        GameplayManager m_GM;
 
         float m_Force;
         float m_Time = 0;
@@ -34,6 +35,7 @@ namespace _2dgame.Components.Gameplay
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
             yield return new Dependency<Recrutable>(item => m_Recrutable = item);
             yield return new Dependency<JointComponent>(item => m_Joint = item);
+            yield return new Dependency<GameplayManager>(item => m_GM = item);
         }
 
         protected override void OnOwnerSet()
@@ -53,7 +55,7 @@ namespace _2dgame.Components.Gameplay
             if (target.GetComponent<Manifestant>() != null)
             {
                 target.Dispose();
-                m_Gameplay.InfluenceRadius -= 0.02f;
+                m_GM.InfluenceRadius -= 0.02f;
                 m_Time = m_Cooldown;
             }
             else if (target.GetComponent<MainCharacter>() != null)
