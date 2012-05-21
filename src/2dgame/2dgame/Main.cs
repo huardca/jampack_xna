@@ -100,9 +100,6 @@ namespace _2dgame
 
             camera.Transform = Matrix.CreateWorld(new Vector3(0, -1, 1), -Vector3.UnitZ, Vector3.UnitY);
 
-
-            Entity queen = Owner.CreateEntity();
-
             Entity background = Owner.CreateEntity();
             background.Transform = Matrix.CreateRotationZ(MathHelper.ToRadians(34f));
             m_EZBakeOven.MakeSprite(background, IMAGE_SCALE * WORLD_SIZE, "emily_gamelin");
@@ -113,6 +110,9 @@ namespace _2dgame
             character.GetComponent<PhysicsComponent>().LinearDamping = 3;
             character.GetComponent<PhysicsComponent>().AngularDamping = 1000;
             character.AddComponent(new MainCharacter(1));
+            m_Physics.ConstrainAngle(0, 0.0003f, 0.2f, character);
+
+            camera.AddComponent(new FollowEntity(character, Vector3.Zero));
 
             Entity building = Owner.CreateEntity();
             building.Transform = Matrix.CreateTranslation( new Vector3(1, 1, 0) );
