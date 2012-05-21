@@ -107,9 +107,16 @@ namespace _2dgame
             Entity character = Owner.CreateEntity();
             m_EZBakeOven.MakeSprite(character, 0.007f * new Vector2(24, 27), "panda_dos",4,5);
             character.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-            character.GetComponent<PhysicsComponent>().LinearDamping = 1;
-            character.AddComponent(new MainCharacter(2f));
-            m_Physics.ConstrainAngle(0, float.MaxValue, 0, character);
+            character.GetComponent<PhysicsComponent>().LinearDamping = 3;
+            character.GetComponent<PhysicsComponent>().AngularDamping = 1000;
+            character.AddComponent(new MainCharacter(1));
+
+            Entity characterJoint = character.CreateChild();
+            characterJoint.AddComponent(m_Physics.CreateCircle(0.8f, 1, FarseerPhysics.Dynamics.BodyType.Static));
+            characterJoint.GetComponent<PhysicsComponent>().IsSensor = true;
+            characterJoint.AddComponent(new Recruter());
+
+            m_Physics.ConstrainAngle(0, 0.0003f, 0.2f, character);
 
             camera.AddComponent(new FollowEntity(character, Vector3.Zero));
 
@@ -126,14 +133,24 @@ namespace _2dgame
                 manifestant.GetComponent<PhysicsComponent>().LinearDamping = 2;
                 m_Physics.ConstrainAngle(0, float.MaxValue, 0, manifestant);
                 manifestant.AddComponent(new Manifestant(0.10f));
+                manifestant.AddComponent(new Recrutable());
             }
 
-            Entity police = Owner.CreateEntity();
-            police.Transform = Matrix.CreateTranslation(new Vector3(-2, -2, 0));
-            m_EZBakeOven.MakeSprite(police, 0.002f * new Vector2(300, 289), "police");
-            police.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-            police.GetComponent<PhysicsComponent>().LinearDamping = 5;
-            police.AddComponent(new Police(0.15f));
+            int policecount = 10;
+            Matrix pos = Matrix.CreateTranslation(new Vector3(0, 10, 0));
+            Matrix rot = Matrix.CreateRotationZ(MathHelper.TwoPi / policecount);
+
+            for (int i = 0; i < policecount; i++)
+            {
+                Entity police = Owner.CreateEntity();
+                police.Transform = pos;
+                m_EZBakeOven.MakeSprite(police, 0.002f * new Vector2(300, 289), "police");
+                police.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+                police.GetComponent<PhysicsComponent>().LinearDamping = 4;
+                police.AddComponent(new Police(0.1f));
+
+                pos *= rot;
+            }
 
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();
             loader.ForceLoadAll(); // so as to not have glitches in the first couple seconds while all the items are loaded as they are accessed

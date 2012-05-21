@@ -6,6 +6,7 @@ using Barebones.Components;
 using Barebones.Dependencies;
 using _2dgame.EngineComponents;
 using Microsoft.Xna.Framework;
+using Barebones.Framework;
 
 namespace _2dgame.Components.Gameplay
 {
@@ -24,6 +25,21 @@ namespace _2dgame.Components.Gameplay
         {
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
             yield return new Dependency<GameplayManager>(item => m_Gameplay = item);
+        }
+
+        protected override void OnOwnerSet()
+        {
+            Owner.Forum.RegisterListener<CollisionMsg>(OnCollision);
+            
+            base.OnOwnerSet();
+        }
+
+        void OnCollision(CollisionMsg msg)
+        {
+            Entity target = msg.First == Owner ? msg.Second : msg.First;
+
+            if (target.GetComponent<Manifestant>() != null)
+                target.Dispose();
         }
 
         public void Update(float dt)
