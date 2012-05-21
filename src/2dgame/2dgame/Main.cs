@@ -108,19 +108,31 @@ namespace _2dgame
             m_EZBakeOven.MakeSprite(background, IMAGE_SCALE * WORLD_SIZE, "emily_gamelin");
 
             Entity character = Owner.CreateEntity();
-            m_EZBakeOven.MakeSprite(character, 0.005f * new Vector2(300, 289), "player");
-            character.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            m_EZBakeOven.MakeSprite(character, 0.002f * new Vector2(300, 289), "player");
+            character.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+            character.GetComponent<PhysicsComponent>().LinearDamping = 3;
+            character.GetComponent<PhysicsComponent>().AngularDamping = 1000;
             character.AddComponent(new MainCharacter(1));
 
             Entity building = Owner.CreateEntity();
             building.Transform = Matrix.CreateTranslation( new Vector3(1, 1, 0) );
             building.AddComponent(m_Physics.CreateRectangle(new Vector2(2, 4), 1, FarseerPhysics.Dynamics.BodyType.Static));
 
+            for (int i = 0; i < 10; i++)
+            {
+                Entity manifestant = Owner.CreateEntity();
+                manifestant.Transform = Matrix.CreateTranslation(new Vector3(-0.3f * i, -0.3f * i, 0));
+                m_EZBakeOven.MakeSprite(manifestant, 0.002f * new Vector2(300, 289), "manifestant");
+                manifestant.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
+                manifestant.GetComponent<PhysicsComponent>().LinearDamping = 2;
+                manifestant.AddComponent(new Manifestant(0.15f));
+            }
+
             Entity police = Owner.CreateEntity();
             police.Transform = Matrix.CreateTranslation(new Vector3(-2, -2, 0));
             m_EZBakeOven.MakeSprite(police, 0.005f * new Vector2(300, 289), "police");
             police.AddComponent(m_Physics.CreateCircle(0.25f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-            police.GetComponent<PhysicsComponent>().LinearDamping = 3;
+            police.GetComponent<PhysicsComponent>().LinearDamping = 2;
             police.AddComponent(new Police(0.25f));
 
             ResourceLoader loader = Owner.GetComponent<ResourceLoader>();

@@ -83,6 +83,7 @@
     <Compile Include="Components\FollowEntity.cs" />
     <Compile Include="Components\FollowFinger.cs" />
     <Compile Include="Components\Gameplay\MainCharacter.cs" />
+    <Compile Include="Components\Gameplay\Manifestant.cs" />
     <Compile Include="Components\Gameplay\Police.cs" />
     <Compile Include="Components\JointComponent.cs" />
     <Compile Include="Components\LeftRightComponent.cs" />
