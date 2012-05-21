@@ -15,11 +15,13 @@ namespace _2dgame.Components
         float m_Speed;
         PhysicsComponent m_Physics;
         KeyboardReader m_Keyboard;
+        JointComponent m_Joint;
 
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield return new Dependency<KeyboardReader>(item => m_Keyboard = item);
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
+            yield return new Dependency<JointComponent>(item => m_Joint = item);
         }
 
         public MainCharacter(float speed)
@@ -44,7 +46,11 @@ namespace _2dgame.Components
 
             if (m_Keyboard.IsKeyDown(Keys.Down))
                 vel.Y -= m_Speed;
+            
+            if(vel.LengthSquared() > 1e-5)
+                vel.Normalize();
 
+            m_Joint.TargetAngle = (float)Math.Atan2((double)vel.Y, (double)vel.X) - (float)Math.Atan2(1, 0);
 
             m_Physics.LinearVelocity = vel * m_Speed;
         }

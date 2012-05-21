@@ -13,7 +13,9 @@ namespace _2dgame.Components.Gameplay
     class Police : EntityComponent, Barebones.Framework.IUpdateable
     {
         PhysicsComponent m_Physics;
-        GameplayManager m_Gameplay;
+        Recrutable m_Recrutable;
+        JointComponent m_Joint;
+
         float m_Force;
 
         public Police(float force)
@@ -24,7 +26,8 @@ namespace _2dgame.Components.Gameplay
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
-            yield return new Dependency<GameplayManager>(item => m_Gameplay = item);
+            yield return new Dependency<Recrutable>(item => m_Recrutable = item);
+            yield return new Dependency<JointComponent>(item => m_Joint = item);
         }
 
         protected override void OnOwnerSet()
@@ -44,8 +47,10 @@ namespace _2dgame.Components.Gameplay
 
         public void Update(float dt)
         {
-            MainCharacter player = m_Gameplay.Player;
-            Vector3 playerPos = player.Owner.GetWorldTranslation();
+            if (m_Recrutable.Target == null)
+                return;
+
+            Vector3 playerPos = m_Recrutable.Target.GetWorldTranslation();
 
             Vector3 current = Owner.GetWorldTranslation();
 
@@ -54,6 +59,8 @@ namespace _2dgame.Components.Gameplay
             toplayer.Normalize();
 
             m_Physics.ApplyForce(m_Force * toplayer);
+
+            m_Joint.TargetAngle = (float)Math.Atan2((double)toplayer.Y, (double)toplayer.X) - (float)Math.Atan2(1, 0);
         }
     }
 }

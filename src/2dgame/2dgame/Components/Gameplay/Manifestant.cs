@@ -14,6 +14,7 @@ namespace _2dgame.Components.Gameplay
         PhysicsComponent m_Physics;
         Recrutable m_Recrutable;
 
+        JointComponent m_Joint;
         float m_Force;
 
         public Manifestant(float force)
@@ -25,6 +26,12 @@ namespace _2dgame.Components.Gameplay
         {
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
             yield return new Dependency<Recrutable>(item => m_Recrutable = item);
+            yield return new Dependency<JointComponent>(item => m_Joint = item);
+        }
+
+        public void Arreter()
+        {
+            this.Dispose();
         }
 
         public void Update(float dt)
@@ -38,6 +45,8 @@ namespace _2dgame.Components.Gameplay
 
             Vector3 toplayer3D = playerPos - current;
             Vector2 toplayer = new Vector2(toplayer3D.X, toplayer3D.Y);
+            
+            m_Joint.TargetAngle = (float)Math.Atan2((double)toplayer.Y, (double)toplayer.X) - (float)Math.Atan2(1, 0);
 
             if (toplayer.Length() < 0.6f)
             {

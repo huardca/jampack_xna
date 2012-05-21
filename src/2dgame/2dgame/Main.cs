@@ -59,7 +59,7 @@ namespace _2dgame
 
             m_Physics = new Physics(Vector2.Zero, minWorld, maxWorld)
                 {
-                    DebugView = true
+                    DebugView = false
                 };
             Owner.AddComponent(m_Physics);
 
@@ -105,7 +105,7 @@ namespace _2dgame
             m_EZBakeOven.MakeSprite(background, IMAGE_SCALE * WORLD_SIZE, "emily_gamelin");
 
             Entity character = Owner.CreateEntity();
-            m_EZBakeOven.MakeSprite(character, 0.002f * new Vector2(300, 289), "player");
+            m_EZBakeOven.MakeSprite(character, 0.007f * new Vector2(24, 27), "panda_dos",4,5);
             character.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
             character.GetComponent<PhysicsComponent>().LinearDamping = 3;
             character.GetComponent<PhysicsComponent>().AngularDamping = 1000;
@@ -124,14 +124,15 @@ namespace _2dgame
             building.Transform = Matrix.CreateTranslation( new Vector3(1, 1, 0) );
             building.AddComponent(m_Physics.CreateRectangle(new Vector2(2, 4), 1, FarseerPhysics.Dynamics.BodyType.Static));
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 50; i++)
             {
                 Entity manifestant = Owner.CreateEntity();
-                manifestant.Transform = Matrix.CreateTranslation(new Vector3(-0.3f * i, -0.3f * i, 0));
-                m_EZBakeOven.MakeSprite(manifestant, 0.002f * new Vector2(300, 289), "manifestant");
+                manifestant.Transform = Matrix.CreateTranslation(new Vector3(-0.1f * i, -0.1f * i, 0));
+                m_EZBakeOven.MakeSprite(manifestant, 0.006f * new Vector2(21, 22), "red_block_haut", 3, 5);
                 manifestant.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
                 manifestant.GetComponent<PhysicsComponent>().LinearDamping = 2;
-                manifestant.AddComponent(new Manifestant(0.15f));
+                m_Physics.ConstrainAngle(0, float.MaxValue, 0, manifestant);
+                manifestant.AddComponent(new Manifestant(0.10f));
                 manifestant.AddComponent(new Recrutable());
             }
 
@@ -147,6 +148,9 @@ namespace _2dgame
                 police.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
                 police.GetComponent<PhysicsComponent>().LinearDamping = 4;
                 police.AddComponent(new Police(0.1f));
+                police.AddComponent(new Recrutable());
+
+                m_Physics.ConstrainAngle(0, float.MaxValue, 0, police);
 
                 pos *= rot;
             }
