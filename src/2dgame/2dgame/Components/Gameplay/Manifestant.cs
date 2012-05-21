@@ -12,7 +12,8 @@ namespace _2dgame.Components.Gameplay
     class Manifestant : EntityComponent, Barebones.Framework.IUpdateable
     {
         PhysicsComponent m_Physics;
-        GameplayManager m_Gameplay;
+        Recrutable m_Recrutable;
+
         float m_Force;
 
         public Manifestant(float force)
@@ -23,13 +24,15 @@ namespace _2dgame.Components.Gameplay
         public override IEnumerable<Barebones.Dependencies.IDependency> GetDependencies()
         {
             yield return new Dependency<PhysicsComponent>(item => m_Physics = item);
-            yield return new Dependency<GameplayManager>(item => m_Gameplay = item);
+            yield return new Dependency<Recrutable>(item => m_Recrutable = item);
         }
 
         public void Update(float dt)
         {
-            MainCharacter player = m_Gameplay.Player;
-            Vector3 playerPos = player.Owner.GetWorldTranslation();
+            if (m_Recrutable.Target == null)
+                return;
+
+            Vector3 playerPos = m_Recrutable.Target.GetWorldTranslation();
 
             Vector3 current = Owner.GetWorldTranslation();
 
