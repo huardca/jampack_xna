@@ -126,17 +126,13 @@ namespace _2dgame
 
             camera.AddComponent(new FollowEntity(character, Vector3.Zero));
 
-            for (int i = 0; i < 50; i++)
-            {
-                Entity manifestant = Owner.CreateEntity();
-                manifestant.Transform = Matrix.CreateTranslation(new Vector3(-0.1f * i, -0.1f * i, 0));
-                m_EZBakeOven.MakeSprite(manifestant, 0.006f * new Vector2(21, 22), "red_block_haut", 3, 5);
-                manifestant.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
-                manifestant.GetComponent<PhysicsComponent>().LinearDamping = 2;
-                m_Physics.ConstrainAngle(0, float.MaxValue, 0, manifestant);
-                manifestant.AddComponent(new Manifestant(0.10f));
-                manifestant.AddComponent(new Recrutable());
-            }
+            CreateManifestants(Vector3.Zero);
+
+            CreateManifestants(new Vector3(8, 5, 0));
+
+            CreateManifestants(new Vector3(-5, 7, 0));
+
+            CreateManifestants(new Vector3(-6, -7, 0));
 
             Entity carreVert = Owner.CreateEntity();
             carreVert.Transform = Matrix.CreateTranslation(new Vector3(3f, 3f, 0));
@@ -171,6 +167,21 @@ namespace _2dgame
             m_MusicInstance = loader.GetResource("theme").Get<SoundEffect>().CreateInstance();
             m_MusicInstance.IsLooped = true;
             m_MusicInstance.Play();
+        }
+
+        private void CreateManifestants(Vector3 manifpos)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                Entity manifestant = Owner.CreateEntity();
+                manifestant.Transform = Matrix.CreateTranslation(manifpos + new Vector3(-0.1f * i, -0.1f * i, 0));
+                m_EZBakeOven.MakeSprite(manifestant, 0.006f * new Vector2(21, 22), "red_block_haut", 3, 5);
+                manifestant.AddComponent(m_Physics.CreateCircle(0.1f, 0.1f, FarseerPhysics.Dynamics.BodyType.Dynamic));
+                manifestant.GetComponent<PhysicsComponent>().LinearDamping = 2;
+                m_Physics.ConstrainAngle(0, float.MaxValue, 0, manifestant);
+                manifestant.AddComponent(new Manifestant(0.01f));
+                manifestant.AddComponent(new Recrutable());
+            }
         }
 
         private void CreateBackground()
@@ -274,6 +285,61 @@ namespace _2dgame
             Entity building18 = Owner.CreateEntity();
             building18.Transform = Matrix.CreateTranslation(new Vector3(-20.2f, -18f, 0));
             building18.AddComponent(m_Physics.CreateRectangle(new Vector2(8f, 6f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+
+            // buildings Kaka
+
+            Entity building20 = Owner.CreateEntity();
+            building20.Transform = Matrix.CreateTranslation(new Vector3(4.4f, 8.8f, 0));
+            building20.AddComponent(m_Physics.CreateRectangle(new Vector2(8.6f, 2.4f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building21 = Owner.CreateEntity();
+            building21.Transform = Matrix.CreateTranslation(new Vector3(4.2f, 12.0f, 0));
+            building21.AddComponent(m_Physics.CreateRectangle(new Vector2(8.6f, 3.5f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building22 = Owner.CreateEntity();
+            building22.Transform = Matrix.CreateTranslation(new Vector3(4.2f, 15.6f, 0));
+            building22.AddComponent(m_Physics.CreateRectangle(new Vector2(8.6f, 2.3f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building23 = Owner.CreateEntity();
+            building23.Transform = Matrix.CreateTranslation(new Vector3(-3.5f, 15.4f, 0));
+            building23.AddComponent(m_Physics.CreateRectangle(new Vector2(5.0f, 2.2f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building24 = Owner.CreateEntity();
+            building24.Transform = Matrix.CreateTranslation(new Vector3(-3.5f, 18.4f, 0));
+            building24.AddComponent(m_Physics.CreateRectangle(new Vector2(5.0f, 2.2f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building25 = Owner.CreateEntity();
+            building25.Transform = Matrix.CreateTranslation(new Vector3(-3.5f, 12.1f, 0));
+            building25.AddComponent(m_Physics.CreateRectangle(new Vector2(5.6f, 3.6f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building26 = Owner.CreateEntity();
+            building26.Transform = Matrix.CreateTranslation(new Vector3(-3.2f, 7.4f, 0));
+            building26.AddComponent(m_Physics.CreateRectangle(new Vector2(5.4f, 5.0f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building27 = Owner.CreateEntity();
+            building27.Transform = Matrix.CreateTranslation(new Vector3(-9.0f, 14.8f, 0));
+            building27.AddComponent(m_Physics.CreateRectangle(new Vector2(4.0f, 1.2f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building28 = Owner.CreateEntity();
+            building28.Transform = Matrix.CreateTranslation(new Vector3(-9.0f, 12.8f, 0));
+            building28.AddComponent(m_Physics.CreateRectangle(new Vector2(3.7f, 2.0f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building29 = Owner.CreateEntity();
+            building29.Transform = Matrix.CreateTranslation(new Vector3(-8.9f, 10.9f, 0));
+            building29.AddComponent(m_Physics.CreateRectangle(new Vector2(4.1f, 1.2f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building30 = Owner.CreateEntity();
+            building30.Transform = Matrix.CreateTranslation(new Vector3(-12.4f, 7.3f, 0));
+            building30.AddComponent(m_Physics.CreateRectangle(new Vector2(11.4f, 4.8f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building31 = Owner.CreateEntity();
+            building31.Transform = Matrix.CreateTranslation(new Vector3(-12.4f, 2.3f, 0));
+            building31.AddComponent(m_Physics.CreateRectangle(new Vector2(11.4f, 4.0f), 1, FarseerPhysics.Dynamics.BodyType.Static));
+
+            Entity building32 = Owner.CreateEntity();
+            building32.Transform = Matrix.CreateTranslation(new Vector3(-13.8f, 11.4f, 0));
+            building32.AddComponent(m_Physics.CreateRectangle(new Vector2(4.2f, 2.0f), 1, FarseerPhysics.Dynamics.BodyType.Static));
         }
 
         private void CreateBeefeater(Vector3 pos)
