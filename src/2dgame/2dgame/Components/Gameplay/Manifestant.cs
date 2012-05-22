@@ -40,7 +40,10 @@ namespace _2dgame.Components.Gameplay
         public void Update(float dt)
         {
             if (m_Recrutable.Target == null)
+            {
+                m_PickedUp = false;
                 return;
+            }
 
             if (m_PickedUp == false)
             {

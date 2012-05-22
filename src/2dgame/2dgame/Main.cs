@@ -122,6 +122,18 @@ namespace _2dgame
             m_EZBakeOven.MakeSprite(radiusBillboard, new Vector2(2, 2), "radius");
             radiusBillboard.AddComponent(new InfluenceComponent());
 
+            Entity zone = Owner.CreateEntity();
+            zone.Transform = Matrix.CreateTranslation(new Vector3(-5, -9, 0));
+            m_EZBakeOven.MakeSprite(zone, 0.005f * new Vector2(600, 303), "finish");
+            zone.AddComponent(m_Physics.CreateRectangle(new Vector2(2, 1), 1, FarseerPhysics.Dynamics.BodyType.Static));
+            zone.GetComponent<PhysicsComponent>().IsSensor = true;
+            zone.AddComponent(new EndZone());
+
+            Entity characterJoint = character.CreateChild();
+            characterJoint.AddComponent(m_Physics.CreateCircle(0.8f, 1, FarseerPhysics.Dynamics.BodyType.Static));
+            characterJoint.GetComponent<PhysicsComponent>().IsSensor = true;
+            characterJoint.AddComponent(new Recruter());
+
             m_Physics.ConstrainAngle(0, 0.0003f, 0.2f, character);
 
             camera.AddComponent(new FollowEntity(character, Vector3.Zero));
@@ -134,14 +146,20 @@ namespace _2dgame
 
             CreateManifestants(new Vector3(-6, -7, 0));
 
-            Entity carreVert = Owner.CreateEntity();
-            carreVert.Transform = Matrix.CreateTranslation(new Vector3(3f, 3f, 0));
+           for(int i=0;i < 10;i++)
+            {
+            
+               Entity carreVert = Owner.CreateEntity();
+            carreVert.Transform = Matrix.CreateTranslation(new Vector3(-1.1f*i, -0.9f*i, 0));
+
+
+
             m_EZBakeOven.MakeSprite(carreVert, 0.006f * new Vector2(21, 25), "vert_face");
             carreVert.AddComponent(m_Physics.CreateCircle(0.1f, 1, FarseerPhysics.Dynamics.BodyType.Dynamic));
             carreVert.GetComponent<PhysicsComponent>().LinearDamping = 2;
             carreVert.AddComponent(new CarreVert());
             carreVert.AddComponent(new Recrutable());
-
+            }
             int policecount = 10;
             Matrix pos = Matrix.CreateTranslation(new Vector3(0, 5, 0));
             Matrix rot = Matrix.CreateRotationZ(MathHelper.TwoPi / policecount);
@@ -340,28 +358,6 @@ namespace _2dgame
             Entity building32 = Owner.CreateEntity();
             building32.Transform = Matrix.CreateTranslation(new Vector3(-13.8f, 11.4f, 0));
             building32.AddComponent(m_Physics.CreateRectangle(new Vector2(4.2f, 2.0f), 1, FarseerPhysics.Dynamics.BodyType.Static));
-        }
-
-        private void CreateBeefeater(Vector3 pos)
-        {
-            float beefeater_distance = 1.05f;
-
-            Entity beefeater = Owner.CreateEntity();
-            beefeater.Transform = Matrix.CreateScale(0.25f) * Matrix.CreateTranslation(pos);
-
-            Entity beef_legs_joint = beefeater.CreateChild();
-            beef_legs_joint.Transform = Matrix.CreateTranslation(-beefeater_distance * Vector3.UnitY);
-
-            Entity beef_legs = beef_legs_joint.CreateChild();
-            beef_legs.AddComponent(new LeftRightComponent(-10, 10, 1, -beefeater_distance * Vector3.UnitY));
-            m_EZBakeOven.MakeSprite(beef_legs, IMAGE_SCALE * new Vector2(105, 219), "beefeater_legs");
-
-            Entity beef_body_joint = beefeater.CreateChild();
-            beef_body_joint.Transform = Matrix.CreateTranslation(beefeater_distance * Vector3.UnitY);
-
-            Entity beef_body = beef_body_joint.CreateChild();
-            beef_body.AddComponent(new LeftRightComponent(-10, 10, -1, beefeater_distance * Vector3.UnitY));
-            m_EZBakeOven.MakeSprite(beef_body, IMAGE_SCALE * new Vector2(180, 351), "beefeater_body");
         }
     }
 }

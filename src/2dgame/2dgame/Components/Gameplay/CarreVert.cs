@@ -26,7 +26,7 @@ namespace _2dgame.Components.Gameplay
                 return;
 
             if(m_GM.InfluenceRadius > 0.61f)
-                m_GM.InfluenceRadius -= 0.005f;
+                m_GM.InfluenceRadius -= 0.001f;
         }
     }
 }

@@ -89,6 +89,7 @@
     <Compile Include="Components\RotatingComponent.cs" />
     <Compile Include="Components\Selectable.cs" />
     <Compile Include="Components\UpDownComponent.cs" />
+    <Compile Include="EndZone.cs" />
     <Compile Include="EngineComponents\GameplayManager.cs" />
     <Compile Include="EngineComponents\Physics.cs" />
     <Compile Include="EngineComponents\TouchReader.cs" />
